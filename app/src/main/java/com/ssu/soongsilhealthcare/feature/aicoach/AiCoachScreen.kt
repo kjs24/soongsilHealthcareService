@@ -30,7 +30,13 @@ fun AiCoachScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(text = "AI 코치", style = MaterialTheme.typography.headlineSmall)
-        Text(text = if (viewModel.isGeminiConfigured) "Gemini API 연동 준비 완료" else "Gemini API 키를 local.properties에 넣어야 실제 응답을 받을 수 있습니다.")
+        Text(
+            text = if (viewModel.isGeminiConfigured) {
+                "Gemini API와 연결되어 있습니다."
+            } else {
+                "Gemini API 키를 local.properties에 넣어야 실제 응답을 받을 수 있습니다."
+            }
+        )
         Card(modifier = Modifier.fillMaxWidth()) {
             Text(
                 text = uiState.answer,

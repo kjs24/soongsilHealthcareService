@@ -39,7 +39,7 @@ fun HomeScreen(
             text = "숭실 헬스케어",
             style = MaterialTheme.typography.headlineMedium
         )
-        Text(text = "오늘의 건강 기록 요약")
+        Text(text = "${summary.nickname}님의 오늘 건강 기록")
         Card(modifier = Modifier.fillMaxWidth()) {
             Column(
                 modifier = Modifier.padding(16.dp),

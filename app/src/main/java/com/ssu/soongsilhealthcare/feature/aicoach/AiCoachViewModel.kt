@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssu.soongsilhealthcare.core.data.local.AppDatabase
+import com.ssu.soongsilhealthcare.core.data.remote.firebase.AuthSession
 import com.ssu.soongsilhealthcare.core.data.remote.gemini.GeminiPromptBuilder
 import com.ssu.soongsilhealthcare.core.data.repository.AiCoachRepository
 import com.ssu.soongsilhealthcare.core.data.repository.DietRepository
@@ -27,7 +28,7 @@ class AiCoachViewModel(application: Application) : AndroidViewModel(application)
     private val exerciseRepository = ExerciseRepository(database.exerciseDao())
     private val dietRepository = DietRepository(database.dietDao())
     private val aiCoachRepository = AiCoachRepository()
-    private val userId = "demo_user"
+    private val userId = AuthSession.uid
 
     private val _uiState = MutableStateFlow(AiCoachUiState())
     val uiState: StateFlow<AiCoachUiState> = _uiState.asStateFlow()

@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssu.soongsilhealthcare.core.data.local.AppDatabase
 import com.ssu.soongsilhealthcare.core.data.local.entity.DietEntity
+import com.ssu.soongsilhealthcare.core.data.remote.firebase.AuthSession
 import com.ssu.soongsilhealthcare.core.data.repository.DietRepository
 import com.ssu.soongsilhealthcare.core.util.CalorieCalculator
 import com.ssu.soongsilhealthcare.core.util.DateUtil
@@ -17,7 +18,7 @@ class DietViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = DietRepository(
         AppDatabase.getInstance(application).dietDao()
     )
-    private val userId = "demo_user"
+    private val userId = AuthSession.uid
     val today = DateUtil.today()
 
     val diets: StateFlow<List<DietEntity>> = repository
@@ -36,7 +37,7 @@ class DietViewModel(application: Application) : AndroidViewModel(application) {
         val carbohydrate = carbohydrateText.toIntOrNull() ?: 0
         val protein = proteinText.toIntOrNull() ?: 0
         val fat = fatText.toIntOrNull() ?: 0
-        val name = foodName.trim().ifBlank { "이름 없는 음식" }
+        val name = foodName.trim().ifBlank { "이름 없는 식단" }
 
         viewModelScope.launch {
             repository.addDiet(

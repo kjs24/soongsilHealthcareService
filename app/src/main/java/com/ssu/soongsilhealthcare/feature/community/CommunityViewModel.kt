@@ -30,7 +30,7 @@ class CommunityViewModel(
 
     fun updateContent(value: String) = _uiState.update { it.copy(content = value) }
     fun updateExerciseSummary(value: String) = _uiState.update { it.copy(exerciseSummary = value) }
-    fun updateCalorie(value: String) = _uiState.update { it.copy(calorie = value) }
+    fun updateCalorie(value: String) = _uiState.update { it.copy(calorie = value.filter(Char::isDigit)) }
 
     fun loadPosts() {
         viewModelScope.launch {
@@ -40,15 +40,19 @@ class CommunityViewModel(
                     _uiState.update { it.copy(isLoading = false, posts = posts) }
                 }
                 .onFailure { error ->
-                    _uiState.update { it.copy(isLoading = false, message = error.message ?: "게시글 조회 실패") }
+                    _uiState.update { it.copy(isLoading = false, message = error.message ?: "게시글 조회에 실패했습니다.") }
                 }
         }
     }
 
     fun addPost() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, message = "") }
             val current = uiState.value
+            if (current.content.isBlank()) {
+                _uiState.update { it.copy(message = "게시글 내용을 입력하세요.") }
+                return@launch
+            }
+            _uiState.update { it.copy(isLoading = true, message = "") }
             runCatching {
                 repository.addPost(
                     content = current.content,
@@ -68,7 +72,7 @@ class CommunityViewModel(
                     )
                 }
             }.onFailure { error ->
-                _uiState.update { it.copy(isLoading = false, message = error.message ?: "게시글 저장 실패") }
+                _uiState.update { it.copy(isLoading = false, message = error.message ?: "게시글 저장에 실패했습니다.") }
             }
         }
     }

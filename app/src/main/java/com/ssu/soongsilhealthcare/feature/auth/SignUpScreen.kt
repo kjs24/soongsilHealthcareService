@@ -61,7 +61,7 @@ fun SignUpScreen(
             enabled = !uiState.isLoading,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "Firebase 회원가입")
+            Text(text = if (uiState.isLoading) "가입 중..." else "Firebase 회원가입")
         }
         Button(
             onClick = onBackClick,

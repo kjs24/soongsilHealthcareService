@@ -25,7 +25,8 @@ class AuthService {
     }
 
     private suspend fun authenticate(action: String, email: String, password: String): FirebaseAuthUser {
-        check(isConfigured) { "Firebase API 키가 local.properties에 없습니다." }
+        check(isConfigured) { "Firebase API key is missing in local.properties." }
+
         val response = NetworkJsonClient.post(
             url = "https://identitytoolkit.googleapis.com/v1/accounts:$action?key=$apiKey",
             body = JSONObject()
@@ -33,6 +34,7 @@ class AuthService {
                 .put("password", password)
                 .put("returnSecureToken", true)
         )
+
         return FirebaseAuthUser(
             uid = response.getString("localId"),
             email = response.optString("email", email),

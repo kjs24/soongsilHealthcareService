@@ -36,7 +36,13 @@ fun CommunityScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text(text = "커뮤니티", style = MaterialTheme.typography.headlineSmall)
-        Text(text = if (viewModel.isFirestoreConfigured) "Firestore 연동 준비 완료" else "Firebase 프로젝트 ID와 로그인이 있어야 실제 게시글을 사용할 수 있습니다.")
+        Text(
+            text = if (viewModel.isFirestoreConfigured) {
+                "Firestore 게시글과 연결되어 있습니다."
+            } else {
+                "Firebase 프로젝트 ID가 필요합니다."
+            }
+        )
         OutlinedTextField(
             value = uiState.content,
             onValueChange = viewModel::updateContent,
@@ -90,7 +96,7 @@ fun CommunityScreen(
                         modifier = Modifier.padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        Text(text = post.nickname)
+                        Text(text = post.nickname, style = MaterialTheme.typography.titleMedium)
                         Text(text = post.content)
                         Text(text = "${post.exerciseSummary} / ${post.calorie} kcal")
                     }

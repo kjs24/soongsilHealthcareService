@@ -12,7 +12,7 @@ class GeminiService {
         get() = apiKey.isNotBlank()
 
     suspend fun askCoach(prompt: String): String {
-        check(isConfigured) { "Gemini API 키가 local.properties에 없습니다." }
+        check(isConfigured) { "Gemini API key is missing in local.properties." }
         val response = NetworkJsonClient.post(
             url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$apiKey",
             body = JSONObject().put(

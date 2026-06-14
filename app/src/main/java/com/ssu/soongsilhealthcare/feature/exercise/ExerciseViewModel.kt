@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssu.soongsilhealthcare.core.data.local.AppDatabase
 import com.ssu.soongsilhealthcare.core.data.local.entity.ExerciseEntity
+import com.ssu.soongsilhealthcare.core.data.remote.firebase.AuthSession
 import com.ssu.soongsilhealthcare.core.data.repository.ExerciseRepository
 import com.ssu.soongsilhealthcare.core.util.CalorieCalculator
 import com.ssu.soongsilhealthcare.core.util.DateUtil
@@ -17,7 +18,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     private val repository = ExerciseRepository(
         AppDatabase.getInstance(application).exerciseDao()
     )
-    private val userId = "demo_user"
+    private val userId = AuthSession.uid
     val today = DateUtil.today()
 
     val exercises: StateFlow<List<ExerciseEntity>> = repository

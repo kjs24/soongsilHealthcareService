@@ -36,34 +36,68 @@ class AuthViewModel(
     }
 
     fun signIn(onSuccess: () -> Unit) {
-        submit(onSuccess) {
+        if (!validateEmailPassword()) return
+        submit(successMessage = "로그인되었습니다.", onSuccess = onSuccess) {
             repository.signIn(uiState.value.email, uiState.value.password)
         }
     }
 
     fun signUp(onSuccess: () -> Unit) {
-        submit(onSuccess) {
+        if (!validateEmailPassword()) return
+        submit(successMessage = "회원가입이 완료되었습니다.", onSuccess = onSuccess) {
             repository.signUp(
                 email = uiState.value.email,
                 password = uiState.value.password,
-                nickname = uiState.value.nickname.ifBlank { uiState.value.email.substringBefore("@") }
+                nickname = uiState.value.nickname
             )
         }
     }
 
-    private fun submit(onSuccess: () -> Unit, block: suspend () -> Unit) {
+    private fun submit(
+        successMessage: String,
+        onSuccess: () -> Unit,
+        block: suspend () -> Unit
+    ) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, message = "") }
             runCatching { block() }
                 .onSuccess {
-                    _uiState.update { it.copy(isLoading = false, message = "성공") }
+                    _uiState.update { it.copy(isLoading = false, message = successMessage) }
                     onSuccess()
                 }
                 .onFailure { error ->
-                    _uiState.update {
-                        it.copy(isLoading = false, message = error.message ?: "요청에 실패했습니다.")
-                    }
+                    _uiState.update { it.copy(isLoading = false, message = error.toAuthMessage()) }
                 }
+        }
+    }
+
+    private fun validateEmailPassword(): Boolean {
+        val state = uiState.value
+        val message = when {
+            state.email.isBlank() -> "이메일을 입력하세요."
+            "@" !in state.email -> "올바른 이메일 형식이 아닙니다."
+            state.password.isBlank() -> "비밀번호를 입력하세요."
+            state.password.length < 6 -> "비밀번호는 6자 이상이어야 합니다."
+            else -> ""
+        }
+        if (message.isNotBlank()) {
+            _uiState.update { it.copy(message = message) }
+            return false
+        }
+        return true
+    }
+
+    private fun Throwable.toAuthMessage(): String {
+        val raw = message.orEmpty()
+        return when {
+            "EMAIL_EXISTS" in raw -> "이미 가입된 이메일입니다."
+            "EMAIL_NOT_FOUND" in raw || "INVALID_LOGIN_CREDENTIALS" in raw -> "가입되지 않았거나 비밀번호가 맞지 않습니다."
+            "INVALID_PASSWORD" in raw -> "비밀번호가 맞지 않습니다."
+            "WEAK_PASSWORD" in raw -> "비밀번호는 6자 이상이어야 합니다."
+            "INVALID_EMAIL" in raw -> "올바른 이메일 형식이 아닙니다."
+            "TOO_MANY_ATTEMPTS_TRY_LATER" in raw -> "잠시 후 다시 시도하세요."
+            raw.isNotBlank() -> raw
+            else -> "요청에 실패했습니다."
         }
     }
 }

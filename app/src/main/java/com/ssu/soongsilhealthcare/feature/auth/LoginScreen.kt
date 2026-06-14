@@ -37,7 +37,13 @@ fun LoginScreen(
     ) {
         Text(text = "숭실 헬스케어", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(12.dp))
-        Text(text = if (viewModel.isFirebaseConfigured) "Firebase 로그인 사용 가능" else "Firebase 키 설정 전에는 임시 로그인을 사용하세요.")
+        Text(
+            text = if (viewModel.isFirebaseConfigured) {
+                "Firebase 계정으로 로그인하세요."
+            } else {
+                "Firebase 설정 전에는 임시 로그인을 사용하세요."
+            }
+        )
         Spacer(modifier = Modifier.height(24.dp))
         OutlinedTextField(
             value = uiState.email,
@@ -61,7 +67,7 @@ fun LoginScreen(
             enabled = !uiState.isLoading,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "Firebase 로그인")
+            Text(text = if (uiState.isLoading) "로그인 중..." else "Firebase 로그인")
         }
         Spacer(modifier = Modifier.height(8.dp))
         Button(
@@ -77,7 +83,7 @@ fun LoginScreen(
             enabled = !uiState.isLoading,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "회원가입 화면")
+            Text(text = "회원가입")
         }
         if (uiState.message.isNotBlank()) {
             Spacer(modifier = Modifier.height(12.dp))

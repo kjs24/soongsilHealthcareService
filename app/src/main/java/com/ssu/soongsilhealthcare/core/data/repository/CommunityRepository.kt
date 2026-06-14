@@ -17,12 +17,14 @@ class CommunityRepository(
 
     suspend fun addPost(content: String, exerciseSummary: String, calorie: Int) {
         check(AuthSession.isFirebaseUser) { "Firebase 로그인 후 게시글을 작성할 수 있습니다." }
+        check(content.isNotBlank()) { "게시글 내용을 입력하세요." }
+
         firestoreService.createCommunityPost(
             post = CommunityPost(
                 userId = AuthSession.uid,
                 nickname = AuthSession.nickname,
-                content = content,
-                exerciseSummary = exerciseSummary,
+                content = content.trim(),
+                exerciseSummary = exerciseSummary.trim(),
                 calorie = calorie,
                 likeCount = 0,
                 createdAt = System.currentTimeMillis()

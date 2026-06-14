@@ -12,8 +12,23 @@ class FirestoreService {
     val isConfigured: Boolean
         get() = projectId.isNotBlank()
 
+    suspend fun getUserProfile(uid: String, idToken: String): UserProfile? {
+        check(isConfigured) { "Firebase project id is missing in local.properties." }
+        val response = runCatching {
+            NetworkJsonClient.get("$baseUrl/users/$uid", idToken)
+        }.getOrElse { return null }
+        val fields = response.optJSONObject("fields") ?: return null
+        return UserProfile(
+            uid = uid,
+            nickname = fields.stringValue("nickname"),
+            height = fields.doubleValue("height"),
+            weight = fields.doubleValue("weight"),
+            goalWeight = fields.doubleValue("goalWeight")
+        )
+    }
+
     suspend fun saveUserProfile(profile: UserProfile, idToken: String) {
-        check(isConfigured) { "Firebase 프로젝트 ID가 local.properties에 없습니다." }
+        check(isConfigured) { "Firebase project id is missing in local.properties." }
         NetworkJsonClient.patch(
             url = "$baseUrl/users/${profile.uid}",
             idToken = idToken,
@@ -24,13 +39,13 @@ class FirestoreService {
                     .put("height", doubleField(profile.height))
                     .put("weight", doubleField(profile.weight))
                     .put("goalWeight", doubleField(profile.goalWeight))
-                    .put("createdAt", integerField(System.currentTimeMillis()))
+                    .put("updatedAt", integerField(System.currentTimeMillis()))
             )
         )
     }
 
     suspend fun createCommunityPost(post: CommunityPost, idToken: String) {
-        check(isConfigured) { "Firebase 프로젝트 ID가 local.properties에 없습니다." }
+        check(isConfigured) { "Firebase project id is missing in local.properties." }
         NetworkJsonClient.post(
             url = "$baseUrl/communityPosts",
             idToken = idToken,
@@ -49,7 +64,7 @@ class FirestoreService {
     }
 
     suspend fun getCommunityPosts(idToken: String): List<CommunityPost> {
-        check(isConfigured) { "Firebase 프로젝트 ID가 local.properties에 없습니다." }
+        check(isConfigured) { "Firebase project id is missing in local.properties." }
         val response = NetworkJsonClient.get("$baseUrl/communityPosts?pageSize=20", idToken)
         val documents = response.optJSONArray("documents") ?: return emptyList()
         return List(documents.length()) { index ->
@@ -80,4 +95,13 @@ class FirestoreService {
 
     private fun JSONObject.integerValue(name: String): Long =
         optJSONObject(name)?.optString("integerValue")?.toLongOrNull() ?: 0L
+
+    private fun JSONObject.doubleValue(name: String): Double {
+        val field = optJSONObject(name) ?: return 0.0
+        return when {
+            field.has("doubleValue") -> field.optDouble("doubleValue")
+            field.has("integerValue") -> field.optString("integerValue").toDoubleOrNull() ?: 0.0
+            else -> 0.0
+        }
+    }
 }
