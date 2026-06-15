@@ -5,5 +5,7 @@ data class UserProfile(
     val nickname: String = "",
     val height: Double = 0.0,
     val weight: Double = 0.0,
-    val goalWeight: Double = 0.0
+    val goalWeight: Double = 0.0,
+    val createdAt: Long = 0L,
+    val updatedAt: Long = 0L
 )

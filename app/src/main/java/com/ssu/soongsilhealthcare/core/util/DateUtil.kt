@@ -1,7 +1,11 @@
 package com.ssu.soongsilhealthcare.core.util
 
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
 object DateUtil {
     fun today(): String {
-        return java.time.LocalDate.now().toString()
+        return SimpleDateFormat("yyyy-MM-dd", Locale.KOREA).format(Date())
     }
 }

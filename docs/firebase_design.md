@@ -2,7 +2,7 @@
 
 ## Firebase 사용 목적
 
-본 프로젝트는 Firebase를 사용하여 사용자 인증, 사용자 정보 저장, 커뮤니티 데이터 저장 및 이미지 업로드 기능을 구현한다.
+본 프로젝트는 Firebase를 사용하여 사용자 인증, 사용자 정보 저장, 커뮤니티 데이터 저장 기능을 구현한다.
 
 ---
 
@@ -10,7 +10,6 @@
 
 * Firebase Authentication
 * Cloud Firestore
-* Firebase Storage
 
 ---
 
@@ -94,7 +93,6 @@ communityPosts
       ├── content
       ├── exerciseSummary
       ├── calorie
-      ├── imageUrl
       ├── likeCount
       └── createdAt
 ```
@@ -108,7 +106,6 @@ communityPosts
 | content         | String    | 게시글 내용    |
 | exerciseSummary | String    | 운동 요약     |
 | calorie         | Int       | 총 소모 칼로리  |
-| imageUrl        | String    | 이미지 URL   |
 | likeCount       | Int       | 좋아요 수     |
 | createdAt       | Timestamp | 게시글 작성 시간 |
 
@@ -120,27 +117,6 @@ communityPosts
 | -------- | ------------------ |
 | 사용자 프로필  | users 컬렉션          |
 | 커뮤니티 게시글 | communityPosts 컬렉션 |
-
----
-
-# 3. Firebase Storage
-
-## 설명
-
-Firebase Storage는 커뮤니티 게시글에 업로드되는 이미지 파일을 저장하기 위해 사용한다.
-
-## 저장 데이터
-
-* 운동 인증 사진
-* 게시글 첨부 이미지
-
-## 저장 구조 예시
-
-```text id="q1z0bz"
-community/
- └── userId/
-      └── imageFile.jpg
-```
 
 ---
 
@@ -167,7 +143,6 @@ allow write: if request.auth != null;
 | 로그인 / 회원가입  | Firebase Authentication |
 | 사용자 프로필 저장  | Cloud Firestore         |
 | 커뮤니티 게시글 저장 | Cloud Firestore         |
-| 이미지 업로드     | Firebase Storage        |
 
 ---
 
@@ -179,7 +154,6 @@ allow write: if request.auth != null;
 → Firestore users 컬렉션에 사용자 정보 저장
 
 게시글 작성
-→ Firebase Storage 이미지 업로드
 → Firestore communityPosts 컬렉션에 게시글 저장
 ```
 
@@ -190,7 +164,6 @@ allow write: if request.auth != null;
 1. 실시간 데이터 동기화 가능
 2. 사용자 인증 기능 제공
 3. 클라우드 기반 데이터 저장 가능
-4. 이미지 업로드 기능 제공
-5. Android와 높은 호환성 제공
+4. Android와 높은 호환성 제공
 
 ---

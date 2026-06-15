@@ -1,4 +1,38 @@
 package com.ssu.soongsilhealthcare.core.data.remote.gemini
 
-// TODO: Gemini API 연결 예정
-class GeminiService
+import com.ssu.soongsilhealthcare.core.data.remote.NetworkJsonClient
+import com.ssu.soongsilhealthcareservice.BuildConfig
+import org.json.JSONArray
+import org.json.JSONObject
+
+class GeminiService {
+    private val apiKey = BuildConfig.GEMINI_API_KEY
+
+    val isConfigured: Boolean
+        get() = apiKey.isNotBlank()
+
+    suspend fun askCoach(prompt: String): String {
+        check(isConfigured) { "Gemini API key is missing in local.properties." }
+        val response = NetworkJsonClient.post(
+            url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$apiKey",
+            body = JSONObject().put(
+                "contents",
+                JSONArray().put(
+                    JSONObject().put(
+                        "parts",
+                        JSONArray().put(JSONObject().put("text", prompt))
+                    )
+                )
+            )
+        )
+        return response
+            .optJSONArray("candidates")
+            ?.optJSONObject(0)
+            ?.optJSONObject("content")
+            ?.optJSONArray("parts")
+            ?.optJSONObject(0)
+            ?.optString("text")
+            .orEmpty()
+            .ifBlank { "AI 응답이 비어 있습니다." }
+    }
+}
