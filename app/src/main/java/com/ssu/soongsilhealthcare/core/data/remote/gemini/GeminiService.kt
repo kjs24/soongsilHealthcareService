@@ -5,6 +5,8 @@ import com.ssu.soongsilhealthcareservice.BuildConfig
 import org.json.JSONArray
 import org.json.JSONObject
 
+private const val GEMINI_MODEL_NAME = "gemini-2.5-flash-lite"
+
 class GeminiService {
     private val apiKey = BuildConfig.GEMINI_API_KEY
 
@@ -14,7 +16,8 @@ class GeminiService {
     suspend fun askCoach(prompt: String): String {
         check(isConfigured) { "Gemini API key is missing in local.properties." }
         val response = NetworkJsonClient.post(
-            url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$apiKey",
+            // Use "gemini-2.5-flash" instead if response quality matters more than cost/latency.
+            url = "https://generativelanguage.googleapis.com/v1beta/models/$GEMINI_MODEL_NAME:generateContent?key=$apiKey",
             body = JSONObject().put(
                 "contents",
                 JSONArray().put(

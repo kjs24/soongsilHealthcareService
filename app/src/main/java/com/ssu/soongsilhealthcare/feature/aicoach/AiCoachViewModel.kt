@@ -1,6 +1,7 @@
 package com.ssu.soongsilhealthcare.feature.aicoach
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssu.soongsilhealthcare.core.data.local.AppDatabase
@@ -55,13 +56,18 @@ class AiCoachViewModel(application: Application) : AndroidViewModel(application)
             }.onSuccess { answer ->
                 _uiState.update { it.copy(isLoading = false, answer = answer) }
             }.onFailure { error ->
+                Log.e(TAG, "Gemini AI coach request failed", error)
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        message = error.message ?: "AI 요청에 실패했습니다."
+                        message = "AI 코치 요청에 실패했습니다. 잠시 후 다시 시도해주세요."
                     )
                 }
             }
         }
+    }
+
+    private companion object {
+        const val TAG = "AiCoachViewModel"
     }
 }
