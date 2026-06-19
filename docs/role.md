@@ -93,7 +93,6 @@
 * Room DB 설계 및 구현
 * Firebase Authentication 연동
 * Cloud Firestore 연동
-* Firebase Storage 연동
 * Gemini API 연동
 * Repository 계층 구현
 
@@ -126,12 +125,6 @@
 
 ---
 
-### Firebase Storage
-
-* 게시글 이미지 업로드
-
----
-
 ### Gemini API
 
 * AI 피드백 요청
@@ -157,7 +150,6 @@
 | Room DB                 | 로컬 데이터 저장   |
 | Firebase Authentication | 로그인 인증      |
 | Cloud Firestore         | 클라우드 데이터 저장 |
-| Firebase Storage        | 이미지 저장      |
 | Gemini API              | AI 피드백 생성   |
 | Retrofit2               | API 통신      |
 | Coroutine               | 비동기 처리      |

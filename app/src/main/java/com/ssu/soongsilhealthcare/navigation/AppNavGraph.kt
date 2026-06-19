@@ -1,8 +1,110 @@
 package com.ssu.soongsilhealthcare.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.ssu.soongsilhealthcare.feature.aicoach.AiCoachScreen
+import com.ssu.soongsilhealthcare.feature.auth.LoginScreen
+import com.ssu.soongsilhealthcare.feature.auth.SignUpScreen
+import com.ssu.soongsilhealthcare.feature.community.CommunityScreen
+import com.ssu.soongsilhealthcare.feature.diet.DietAddScreen
+import com.ssu.soongsilhealthcare.feature.diet.DietScreen
+import com.ssu.soongsilhealthcare.feature.exercise.ExerciseAddScreen
+import com.ssu.soongsilhealthcare.feature.exercise.ExerciseScreen
+import com.ssu.soongsilhealthcare.feature.home.HomeScreen
+import com.ssu.soongsilhealthcare.feature.mypage.MyPageScreen
+import com.ssu.soongsilhealthcare.feature.mypage.SettingScreen
 
 @Composable
-fun AppNavGraph() {
-    // TODO: Navigation Compose 연결 예정
+fun AppNavGraph(
+    modifier: Modifier = Modifier,
+    navController: NavHostController = rememberNavController()
+) {
+    NavHost(
+        modifier = modifier,
+        navController = navController,
+        startDestination = Routes.LOGIN
+    ) {
+        composable(Routes.LOGIN) {
+            LoginScreen(
+                onAuthenticated = {
+                    navController.navigate(Routes.HOME) {
+                        popUpTo(Routes.LOGIN) { inclusive = true }
+                    }
+                },
+                onSignUpClick = { navController.navigate(Routes.SIGN_UP) }
+            )
+        }
+        composable(Routes.SIGN_UP) {
+            SignUpScreen(
+                onSignedUp = {
+                    navController.navigate(Routes.HOME) {
+                        popUpTo(Routes.LOGIN) { inclusive = true }
+                    }
+                },
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+        composable(Routes.HOME) {
+            HomeScreen(
+                onExerciseClick = { navController.navigate(Routes.EXERCISE) },
+                onDietClick = { navController.navigate(Routes.DIET) },
+                onAiCoachClick = { navController.navigate(Routes.AI_COACH) },
+                onCommunityClick = { navController.navigate(Routes.COMMUNITY) },
+                onMyPageClick = { navController.navigate(Routes.MYPAGE) }
+            )
+        }
+        composable(Routes.EXERCISE) {
+            ExerciseScreen(
+                onAddClick = { navController.navigate(Routes.EXERCISE_ADD) },
+                onBackHomeClick = { navController.navigateToHome() }
+            )
+        }
+        composable(Routes.EXERCISE_ADD) {
+            ExerciseAddScreen(
+                onSaved = { navController.popBackStack() }
+            )
+        }
+        composable(Routes.DIET) {
+            DietScreen(
+                onAddClick = { navController.navigate(Routes.DIET_ADD) },
+                onBackHomeClick = { navController.navigateToHome() }
+            )
+        }
+        composable(Routes.DIET_ADD) {
+            DietAddScreen(
+                onSaved = { navController.popBackStack() }
+            )
+        }
+        composable(Routes.AI_COACH) {
+            AiCoachScreen(onBackHomeClick = { navController.navigateToHome() })
+        }
+        composable(Routes.COMMUNITY) {
+            CommunityScreen(onBackHomeClick = { navController.navigateToHome() })
+        }
+        composable(Routes.MYPAGE) {
+            MyPageScreen(
+                onBackHomeClick = { navController.navigateToHome() },
+                onSettingsClick = { navController.navigate(Routes.SETTINGS) },
+                onLoggedOut = {
+                    navController.navigate(Routes.LOGIN) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+        composable(Routes.SETTINGS) {
+            SettingScreen(onBackClick = { navController.popBackStack() })
+        }
+    }
+}
+
+private fun NavHostController.navigateToHome() {
+    navigate(Routes.HOME) {
+        popUpTo(Routes.HOME) { inclusive = false }
+        launchSingleTop = true
+    }
 }

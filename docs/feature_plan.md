@@ -1,5 +1,34 @@
 # soongsilHealthcareService 기능 명세서
 
+## 중간보고서 기준 구현 상태
+
+현재 프로젝트는 Android Studio와 Kotlin 기반으로 기본 폴더 구조와 화면 이동 구조를 구성하였다. 또한 Room DB를 이용하여 개인 운동 기록과 식단 기록을 로컬에 저장하고, Firebase Authentication, Cloud Firestore, Gemini API를 이용해 로그인, 프로필, 커뮤니티, AI 코치 기능을 실제로 사용할 수 있도록 구현하였다.
+
+이번 중간보고서용 MVP에서 완료한 기능은 다음과 같다.
+
+* 임시 로그인 화면에서 홈 화면으로 이동
+* 홈 화면에서 오늘 운동 총 칼로리와 식단 총 칼로리 표시
+* 운동 기록 추가, 오늘 날짜 기준 조회, 삭제
+* 식단 기록 추가, 오늘 날짜 기준 조회, 삭제, 즐겨찾기 토글
+* AI 코치, 커뮤니티, 마이페이지 화면 이동 및 실제 기능 연동
+* Navigation Compose 기반 화면 연결
+
+Firebase Storage는 사용하지 않는다. 커뮤니티는 무료 구성 기준에 맞춰 텍스트 게시글, 운동 요약, 칼로리, 좋아요 기능만 Cloud Firestore에 저장한다. 임시 로그인은 로컬 MVP 시연에서 인증보다 운동/식단 기록 저장 흐름을 먼저 확인하기 위한 장치이다.
+
+## 앱 실행 및 빌드
+
+Android Studio에서 `app` 실행 구성을 실행하거나 아래 명령어로 debug 빌드를 확인한다.
+
+```bash
+./gradlew :app:assembleDebug
+```
+
+Windows에서는 다음 명령어를 사용한다.
+
+```bash
+gradlew.bat :app:assembleDebug
+```
+
 ## 프로젝트 개요
 
 soongsilHealthcareService는 헬스를 하는 사용자가 자신의 운동 기록과 식단 기록을 관리하고, AI 코치를 통해 운동 및 식단 피드백을 받을 수 있으며, 다른 사용자와 운동 현황을 공유할 수 있는 Android 기반 헬스케어 애플리케이션이다.
@@ -168,7 +197,6 @@ soongsilHealthcareService는 헬스를 하는 사용자가 자신의 운동 기�
 
 * 게시글 내용
 * 운동 요약
-* 사진(선택)
 
 ### 출력 데이터
 
@@ -179,7 +207,6 @@ soongsilHealthcareService는 헬스를 하는 사용자가 자신의 운동 기�
 ### 사용 기술
 
 * Cloud Firestore
-* Firebase Storage
 
 ### 저장 데이터
 
@@ -237,7 +264,6 @@ soongsilHealthcareService는 헬스를 하는 사용자가 자신의 운동 기�
 | 로컬 데이터베이스   | Room DB                 |
 | 로그인 인증      | Firebase Authentication |
 | 클라우드 데이터베이스 | Cloud Firestore         |
-| 파일 저장       | Firebase Storage        |
 | AI 기능       | Gemini API              |
 | 화면 이동       | Navigation Compose      |
 
